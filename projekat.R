@@ -228,7 +228,7 @@ ggplot(data, aes(x = factor(round(battery_wh, -1)), y = price)) +
   geom_boxplot(outlier.alpha = 0.2, fill = "skyblue", color = "darkblue") +
   scale_y_continuous(labels = scales::comma) +
   labs(
-    title = "Cena uređaja u odnosu na kapacitet baterije (Boxplot)",
+    title = "Cena uređaja u odnosu na kapacitet baterije",
     x = "Kapacitet baterije (Wh, zaokruženo na 10)",
     y = "Cena (USD)"
   ) +
@@ -593,11 +593,17 @@ ggplot(datav2, aes(x = ram_gb, y = price)) +
 
 # 5) Grafik cene u odnosu na broj jezgara procesora
 
-ggplot(datav2, aes(x = cpu_cores, y = price)) +
-  geom_point() +
-  labs(title = "Cena u odnosu na broj jezgara procesora",
-       x = "Broj jezgara", y = "Cena (USD)") +
-  theme_minimal()
+ggplot(datav2, aes(x = factor(cpu_cores), y = price)) +
+  geom_boxplot(fill = "skyblue", color = "darkblue", outlier.alpha = 0.25) +
+  labs(
+    title = "Cena uređaja u odnosu na broj jezgara procesora",
+    x = "Broj jezgara",
+    y = "Cena (USD)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
 
 # 6) Grafik cene u odnosu na base GHZ
 
@@ -631,15 +637,21 @@ ggplot(datav2, aes(x = device_type, y = price)) +
        x = "Tip uređaja", y = "Cena (USD)") +
   theme_minimal()
 
-# 9) Uticaj tipa eksterne memorije na količinu memorije i cenu uređaja
+# 9) Uticaj VRAM memorije i ranga grafičke kartice na cenu uređaja
 
-ggplot(datav2, aes(x = storage_gb, y = price, color = storage_type)) +
-  geom_point(alpha = 1/3) +
-  facet_wrap(~ storage_type) +
-  theme_minimal() + labs(
-    title = "Uticaj tipa eksterne memorije na količinu memorije i cenu uređaja",
-    x = "Količina memorije",
-    y = "Cena u dolarima"
+ggplot(datav2, aes(x = vram_gb, y = price, color = factor(gpu_tier))) +
+  geom_jitter(alpha = 0.6, width = 0.3) +
+  scale_color_viridis_d() +
+  labs(
+    title = "Uticaj VRAM memorije i ranga grafičke kartice na cenu uređaja",
+    x = "VRAM (GB)",
+    y = "Cena (USD)",
+    color = "GPU tier"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    panel.grid.minor = element_blank()
   )
 
 # 10) Uticaj ranga procesora i ranga grafičke kartice na cenu
@@ -678,10 +690,6 @@ datav3$display_type = NULL
 # uklanjanje display_size
 
 datav3$display_size_in = NULL
-
-# uklanjanje charger_watts
-
-datav3$charger_watts = NULL
 
 # uklanjanje psu_wats
 
