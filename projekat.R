@@ -145,17 +145,16 @@ ggplot(data, aes(x = factor(ram_gb), y = price)) +
 
 # Grafik cene uređaja u odnosu na broj jezgara procesora
 
-ggplot(data, aes(x = cpu_cores, y = price)) +
-  geom_point(alpha = 0.4) +
+ggplot(data, aes(x = factor(cpu_cores), y = price)) +
+  geom_boxplot() +
   labs(
     title = "Cena uređaja u odnosu na broj jezgara procesora",
     x = "Broj jezgara procesora",
     y = "Cena uređaja (USD)"
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-    axis.title = element_text(size = 12)
+    plot.title = element_text(face = "bold", hjust = 0.5)
   )
 
 # Grafik cene uređaja u odnosu na rang procesora
@@ -177,30 +176,6 @@ ggplot(data, aes(x = as.factor(gpu_tier), y = price)) +
   labs(
     title = "Cena uređaja u odnosu na GPU Tier",
     x = "GPU Tier (rang grafičke kartice)",
-    y = "Cena uređaja (USD)"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-
-# Grafik cene uređaja u odnosu na vram memoriju
-
-ggplot(data, aes(x = vram_gb, y = price)) +
-  geom_point() +
-  labs(
-    title = "Cena uređaja u odnosu na VRAM memoriju",
-    x = "Video memorija (GB)",
-    y = "Cena uređaja (USD)"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-
-# Grafik cene uređaja u odnosu na količinu memorije
-
-ggplot(data, aes(x = storage_gb, y = price)) +
-  geom_point() +
-  labs(
-    title = "Cena uređaja u odnosu na kapaciteta skladišta",
-    x = "Kapacitet skladišta (GB)",
     y = "Cena uređaja (USD)"
   ) +
   theme_minimal(base_size = 14) +
@@ -235,10 +210,10 @@ ggplot(data, aes(x = resolution, y = price)) +
 
 # Grafik cene u odnosu na frekvenciju osvežavanja tj refresh rate
 
-ggplot(data, aes(x = refresh_hz, y = price)) +
-  geom_point(alpha = 0.5, color = "black") +
+ggplot(data, aes(x = factor(refresh_hz), y = price)) +
+  geom_violin(color = "darkblue") +
   labs(
-    title = "Cena uređaja u odnosu na frekvenciju osvežavanja ekrana",
+    title = "Cena uređaja u odnosu na frekvenciju osvežavanja",
     x = "Frekvencija osvežavanja (Hz)",
     y = "Cena uređaja (USD)"
   ) +
@@ -280,17 +255,16 @@ ggplot(data, aes(x = weight_kg, y = price)) +
 
 # Grafik cene uređaja u odnosu na brzinu procesora
 
-ggplot(data, aes(x = cpu_base_ghz, y = price)) +
-  geom_point() +
+ggplot(data, aes(x = factor(cpu_base_ghz), y = price)) +
+  geom_violin(fill = "purple") +
   labs(
     title = "Cena uređaja u odnosu na brzinu procesora",
     x = "Osnovna brzina procesora (GHz)",
     y = "Cena uređaja (USD)"
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    panel.grid.minor = element_blank()
+    plot.title = element_text(hjust = 0.5, face = "bold")
   )
 
 # Grafik cene uređaja u odnosu na proizvođača procesora
@@ -340,21 +314,6 @@ ggplot(data, aes(x = brand, y = price)) +
   )
 
 # Kombinacije podataka radi boljeg prepoznavanja trendova
-
-# Uticaj tipa eksterne memorije na količinu memorije i cenu uređaja
-
-ggplot(data, aes(x = storage_gb, y = price, color = storage_type)) +
-  geom_point(alpha = 1/3) +
-  facet_wrap(~ storage_type) +
-  theme_minimal() + labs(
-    title = "Uticaj tipa eksterne memorije na količinu memorije i cenu uređaja",
-    x = "Količina memorije",
-    y = "Cena u dolarima"
-  )+
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    panel.grid.minor = element_blank()
-  )
 
 # Uticaj marke procesora na cenu po rangu
 

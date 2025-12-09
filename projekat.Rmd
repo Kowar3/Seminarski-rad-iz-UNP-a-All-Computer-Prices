@@ -223,17 +223,16 @@ Sa grafika se može videti da sa porastom broja jezgara blago raste i cena uređ
 je i logično jer broj jezgara je indikator procesorske moći. Takođe postoji nekoliko primera sa manje od 10 jezgara, a cenom preko 8000$ i verovatno je isti razlog kao za ove prethodne, a takođe je moguće da je došlo do nekih grešaka pri unosu, što je potrebno dodatno ispitati.
 
 ```{r}
-ggplot(data, aes(x = cpu_cores, y = price)) +
-  geom_point(alpha = 0.4) +
+ggplot(data, aes(x = factor(cpu_cores), y = price)) +
+  geom_boxplot() +
   labs(
     title = "Cena uređaja u odnosu na broj jezgara procesora",
     x = "Broj jezgara procesora",
     y = "Cena uređaja (USD)"
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-    axis.title = element_text(size = 12)
+    plot.title = element_text(face = "bold", hjust = 0.5)
   )
 ```
 
@@ -279,45 +278,6 @@ ggplot(data, aes(x = as.factor(gpu_tier), y = price)) +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 ```
 
-# Grafik cene uređaja u odnosu na vram memoriju
-
-VRAM memorija jeste u stvari zasebna memorija grafičke kartice, koja se koristi 
-za generisanje slika, koje se prikazuju na ekranu. Više ovakvog ram-a znači i 
-veću cenu, ali nije sasvim pravilno, postoje uređaji sa malo VRAM-a sa izuzetno 
-visokim cenama. Što se tiče potencijalnih outlier-a postoje uređaji sa 0GB VRAM-a, 
-moguće da nemaju uopšte VRAM i da budu poprilično skupi. Svaki deo ima outlier-e 
-ali su svi u granicama normale.
-
-```{r}
-ggplot(data, aes(x = vram_gb, y = price)) +
-  geom_point() +
-  labs(
-    title = "Cena uređaja u odnosu na VRAM memoriju",
-    x = "Video memorija (GB)",
-    y = "Cena uređaja (USD)"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-```
-
-# Grafik cene uređaja u odnosu na količinu memorije
-
-Standardne vrednosti količine memorije jesu upravo 512GB i 1TB što grafik, 
-sa slike i potvrđuje, većina uređaja se nalazi u ovom opsegu. Svakako je velika 
-razlika u ceni u  zavisnosti od tipa memorije (SSD ili HDD). Nekih nerealnih vrednosti uglavnom nema.
-
-```{r}
-ggplot(data, aes(x = storage_gb, y = price)) +
-  geom_point() +
-  labs(
-    title = "Cena uređaja u odnosu na kapaciteta skladišta",
-    x = "Kapacitet skladišta (GB)",
-    y = "Cena uređaja (USD)"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-```
-
 # Grafik cene uređaja u odnosu na tip memorije
 
 Boxplot-ovi prikazuju zavisnost cene od tipa memorije, HDD je najstarija i najsporija, 
@@ -328,6 +288,8 @@ najsporija i najjeftinija memorija. Postoje uređaji sa velikom cenom, a najslab
 vrstom memorije, ali je verovatno ima dosta, jer su ostale komponente skuplje i jače. 
 Dobar primer je RAM, ako imamo mnogo RAM-a, onda nam brzina eksterne memorije nije 
 presudna, te je bolje uzeti sporiju i jeftiniju eksternu memoriju.
+
+Prirodno pitanje koje se postavlja je da li bi nam multivarijanta analiza tipa eksterne memorije zajedno sa njenom veličinom u odnosu na cenu dala neke bolje rezultate. Ispostavlja se da nam ne bi dala nikakvo poboljšanje, najviše što bismo dobili time je potvrdu prethodno ustanovljenih trendova.
 
 ```{r}
 ggplot(data, aes(x = storage_type, y = price)) +
@@ -393,10 +355,10 @@ za svaku frekvenciju većina uređaja ima cenu do 4000$, dosta većih vrednosti 
 Nema nekog pravilnog povećanja ili smanjenja, pa ovo obeležje i nije toliko bitno.
 
 ```{r}
-ggplot(data, aes(x = refresh_hz, y = price)) +
-  geom_point(alpha = 0.5, color = "black") +
+ggplot(data, aes(x = factor(refresh_hz), y = price)) +
+  geom_violin(color = "darkblue") +
   labs(
-    title = "Cena uređaja u odnosu na frekvenciju osvežavanja ekrana",
+    title = "Cena uređaja u odnosu na frekvenciju osvežavanja",
     x = "Frekvencija osvežavanja (Hz)",
     y = "Cena uređaja (USD)"
   ) +
@@ -460,17 +422,16 @@ malom cenom, u redu je ako su im npr. druge komponente jeftinije ili može tako�
 zavisiti od proizvođača procesora.
 
 ```{r}
-ggplot(data, aes(x = cpu_base_ghz, y = price)) +
-  geom_point() +
+ggplot(data, aes(x = factor(cpu_base_ghz), y = price)) +
+  geom_violin(fill = "purple") +
   labs(
     title = "Cena uređaja u odnosu na brzinu procesora",
     x = "Osnovna brzina procesora (GHz)",
     y = "Cena uređaja (USD)"
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    panel.grid.minor = element_blank()
+    plot.title = element_text(hjust = 0.5, face = "bold")
   )
 ```
 
@@ -547,23 +508,6 @@ ggplot(data, aes(x = brand, y = price)) +
 ```
 
 # Kombinacije podataka radi boljeg prepoznavanja trendova
-
-# Uticaj tipa eksterne memorije na količinu memorije i cenu uređaja
-
-```{r}
-ggplot(data, aes(x = storage_gb, y = price, color = storage_type)) +
-  geom_point(alpha = 1/3) +
-  facet_wrap(~ storage_type) +
-  theme_minimal() + labs(
-    title = "Uticaj tipa eksterne memorije na količinu memorije i cenu uređaja",
-    x = "Količina memorije",
-    y = "Cena u dolarima"
-  )+
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    panel.grid.minor = element_blank()
-  )
-```
 
 # Uticaj marke procesora na cenu po rangu
 
