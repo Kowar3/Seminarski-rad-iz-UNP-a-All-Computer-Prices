@@ -131,12 +131,12 @@ ggplot(data, aes(x = device_type, y = price, fill = device_type)) +
 
 # Grafik cene uređaja u odnosu na RAM memoriju
 
-ggplot(data, aes(x = ram_gb, y = price)) +
-  geom_point(color = "black", size = 1) +
+ggplot(data, aes(x = factor(ram_gb), y = price)) +
+  geom_boxplot() +
   labs(
     title = "Cena uređaja u odnosu na RAM memoriju",
-    x = "RAM memorija (GB)",
-    y = "Cena uređaja (USD)"
+    x = "RAM (GB)",
+    y = "Cena (USD)"
   ) +
   theme_minimal(base_size = 14) +
   theme(
@@ -218,18 +218,6 @@ ggplot(data, aes(x = storage_type, y = price)) +
   theme_minimal(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
-# Grafik cene uređaja u odnosu na veličinu ekrana
-
-ggplot(data, aes(x = display_size_in, y = price)) +
-  geom_point() +
-  labs(
-    title = "Cena uređaja u odnosu na veličinu ekrana",
-    x = "Veličina ekrana (inči)",
-    y = "Cena uređaja (USD)"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-
 # Grafik cene uređaja u odnosu na rezoluciju ekrana
 
 ggplot(data, aes(x = resolution, y = price)) +
@@ -261,18 +249,18 @@ ggplot(data, aes(x = refresh_hz, y = price)) +
 
 # Grafik cene u odnosu na kapacitet baterije uređaja
 
-ggplot(data, aes(x = battery_wh, y = price)) +
-  geom_point() +
+ggplot(data, aes(x = factor(round(battery_wh, -1)), y = price)) +
+  geom_boxplot(outlier.alpha = 0.2, fill = "skyblue", color = "darkblue") +
   scale_y_continuous(labels = scales::comma) +
   labs(
-    title = "Cena uređaja u odnosu na kapacitet baterije (Battery Wh)",
-    x = "Kapacitet baterije (Wh)",
-    y = "Cena uređaja (USD)"
+    title = "Cena uređaja u odnosu na kapacitet baterije (Boxplot)",
+    x = "Kapacitet baterije (Wh, zaokruženo na 10)",
+    y = "Cena (USD)"
   ) +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),
-    panel.grid.minor = element_blank()
+    axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
 # Grafik cene uređaja u odnosu na njegovu težinu
@@ -428,6 +416,40 @@ ggplot(data, aes(x = cpu_tier, y = price, color = gpu_tier)) +
     panel.grid.minor = element_blank()
   )
 
+# Uticaj VRAM memorije i ranga grafičke kartice na cenu uređaja
+
+ggplot(data, aes(x = vram_gb, y = price, color = factor(gpu_tier))) +
+  geom_jitter(alpha = 0.6, width = 0.3) +
+  scale_color_viridis_d() +
+  labs(
+    title = "Uticaj VRAM memorije i ranga grafičke kartice na cenu uređaja",
+    x = "VRAM (GB)",
+    y = "Cena (USD)",
+    color = "GPU tier"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    panel.grid.minor = element_blank()
+  )
+
+# Uticaj RAM memorije i godine izlaska uređaja na cenu na cenu uređaja
+
+ggplot(data, aes(x = ram_gb, y = price, color = release_year)) +
+  geom_jitter(alpha = 0.4) +
+  scale_color_viridis_c() +
+  labs(
+    title = "Uticaj RAM memorije i godine izlaska uređaja na cenu na cenu uređaja",
+    x = "RAM (GB)",
+    y = "Cena (USD)",
+    color = "Godina izlaska"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    panel.grid.minor = element_blank()
+  )
+
 # ČIŠĆENJE I OBRADA PODATAKA
 
 datav2 = data
@@ -499,33 +521,15 @@ nrow(preskupi_racunari)
 
 datav2 = datav2 %>% filter(!((device_type == "Desktop" & price > 8000) | (device_type == "Laptop" & price > 10000)))
 
-ggplot(data = datav2) + geom_point(mapping = aes(x = device_type, y = price)) + theme_minimal() + labs(
-  title = "Odnos tipa uređaja i cene",
-  x = "Tip uređaja",
-  y = "Cena (USD)"
-)
-
 skupi_slab_gpu = datav2 %>% filter(gpu_tier == 1 & price > 6000)
 nrow(skupi_slab_gpu)
 
 datav2 = datav2 %>% filter(!(gpu_tier == 1 & price > 6000))
 
-ggplot(data = datav2) + geom_point(mapping = aes(x = gpu_tier, y = price)) + theme_minimal() + labs(
-  title = "Odnos ranga grafičke kartice i cene",
-  x = "Rang grafičke kartice",
-  y = "Cena (USD)"
-)
-
 jeftini_ogromna_rezolucija = datav2 %>% filter(resolution %in% c("3440x1440", "3840x2160") & price < 500)
 nrow(jeftini_ogromna_rezolucija)
 
 datav2 = datav2 %>% filter(!(resolution %in% c("3440x1440", "3840x2160") & price < 500))
-
-ggplot(data = datav2) + geom_point(mapping = aes(x = resolution, y = price)) + theme_minimal() + labs(
-  title = "Odnos rezolucije ekrana i cene",
-  x = "Rezolucija ekrana",
-  y = "Cena (USD)"
-)
 
 prejeftini_macovi = datav2 %>% filter(os == "macOS" & price < 700)
 nrow(prejeftini_macovi)
