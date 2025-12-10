@@ -1063,14 +1063,13 @@ i kada bi se pojavio model koji nije bio u trening skupu, naš model bi napravio
 Bolji prediktor nam predstavlja brend, iako je nepreciznija predikcija samo preko brenda, 
 barem neće naš model da „preuči“, tj. da bude overfittovan na trening skupu.
 
-# Uklanjanje gpu_model-a, form_factor-a, display_type, display_size_in, psu_watts, wifi, bluetooth i weight_kg
+# Uklanjanje gpu_model-a, form_factor-a, display_type, display_size_in, wifi, bluetooth i weight_kg
 
 ```{r}
 datav3$gpu_model = NULL
 datav3$form_factor = NULL
 datav3$display_type = NULL
 datav3$display_size_in = NULL
-datav3$psu_watts = NULL
 datav3$wifi = NULL
 datav3$bluetooth = NULL
 datav3$weight_kg = NULL
@@ -1539,6 +1538,80 @@ m12_rmse; m12_mae
 
 summary(model_12)
 ```
+
+# DODATNA DVA MODELA LINEARNE REGRESIJE
+
+# Delimo podatke na laptopove i računare i za oba skupa podataka treniramo model i vršimo predikciju najbolje što možemo
+
+```{r}
+laptopovi = datav4[datav4$device_type == "Laptop",]
+
+racunari = datav4[datav4$device_type == "Desktop",]
+```
+
+# MODEL SAMO LAPTOPOVI
+
+```{r}
+set.seed(123)
+
+n_lap = nrow(laptopovi)
+train_idx_lap = sample(seq_len(n_lap), size = 0.8 * n_lap)
+
+train_lap = laptopovi[train_idx_lap, ]
+test_lap  = laptopovi[-train_idx_lap, ]
+
+nrow(train_lap)
+nrow(test_lap)
+
+model_lap = lm(log_price ~ cpu_tier + gpu_tier + ram_gb + cgt_score + storage_gb +
+                   brand + os + cpu_generation + vram_gb + release_year + charger_watts, data = train_lap)
+
+pred_lap = expm1(predict(model_lap, test_lap))
+true_lap = test_lap$price
+
+lap_rmse = sqrt(mean((pred_lap - true_lap)^2))
+lap_mae  = mean(abs(pred_lap - true_lap))
+
+lap_rmse
+lap_mae
+
+summary(model_lap)
+```
+
+Kao i za prethodne modele linarne regresije delimo skup podataka na train i test, treniramo model, predviđamo cenu i računamo RMSE i MAE. Za model smo koristili neke najbitnije prediktore, kao što su bili i za ceo skup podataka, a ideja je bila da se fokusiramo na prediktore vezane samo za laptop, charger_watts se dobro pokazao, za razliku od battery_wh koji nije neki bitan prediktor.
+
+Ovaj model je pokazao veoma dobre rezultate, čak šta više ima najveću vrednost R^2 metrike do sada (ali naravno ovo je samo deo podataka nije ceo skup kao malopre). F statistika je velika i p vrednost je mala što nam ukazuje da smo izabrali uglavnom dobre prediktore. Možemo primetiti i da ovaj model daje najmanju RMSE ~263,4.
+
+# MODEL SAMO RAČUNARI
+
+```{r}
+set.seed(123)
+
+n_rac = nrow(racunari)
+train_idx_rac = sample(seq_len(n_rac), size = 0.8 * n_rac)
+
+train_rac = racunari[train_idx_rac, ]
+test_rac  = racunari[-train_idx_rac, ]
+
+nrow(train_rac)
+nrow(test_rac)
+
+model_rac = lm(log_price ~ cpu_tier + gpu_tier + ram_gb + storage_gb +
+                 brand + os + vram_gb + release_year + psu_watts, data = train_rac)
+
+pred_rac = expm1(predict(model_rac, test_rac))
+true_rac = test_rac$price
+
+rac_rmse = sqrt(mean((pred_rac - true_rac)^2))
+rac_mae  = mean(abs(pred_rac - true_rac))
+
+rac_rmse
+rac_mae
+
+summary(model_rac)
+```
+
+Slično kao i prethodni, ovaj model je dao dobre rezultate metrika, malo niže R^2 od ostalih, ali zato ubedljivo najniža vrednost RMSE i MAE. F statistika i p vrednost su sličnih vrednosti kao i u prošlom modelu što nam pokazuje da je ovo dobar model.
 
 # RANDOM FOREST
 

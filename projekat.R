@@ -691,10 +691,6 @@ datav3$display_type = NULL
 
 datav3$display_size_in = NULL
 
-# uklanjanje psu_wats
-
-datav3$psu_watts = NULL
-
 # uklanjanje wifi
 
 datav3$wifi = NULL
@@ -1052,6 +1048,71 @@ m12_mae  = mean(abs(pred_12 - true_price))
 m12_rmse; m12_mae
 
 summary(model_12)
+
+# DODATNA DVA MODELA LINEARNE REGRESIJE
+
+# Delimo podatke na laptopove i računare i za oba skupa podataka treniramo model i vršimo predikciju najbolje što možemo
+
+laptopovi = datav4[datav4$device_type == "Laptop",]
+laptopovi
+
+racunari = datav2[datav2$device_type == "Desktop",]
+racunari
+
+# MODEL SAMO LAPTOPOVI
+
+set.seed(123)
+
+n_lap = nrow(laptopovi)
+train_idx_lap = sample(seq_len(n_lap), size = 0.8 * n_lap)
+
+train_lap = laptopovi[train_idx_lap, ]
+test_lap  = laptopovi[-train_idx_lap, ]
+
+nrow(train_lap)
+nrow(test_lap)
+
+model_lap = lm(log_price ~ cpu_tier + gpu_tier + ram_gb + cgt_score + storage_gb +
+                   brand + os + cpu_generation + vram_gb + release_year
+                    + charger_watts, data = train_lap)
+
+pred_lap = expm1(predict(model_lap, test_lap))
+true_lap = test_lap$price
+
+lap_rmse = sqrt(mean((pred_lap - true_lap)^2))
+lap_mae  = mean(abs(pred_lap - true_lap))
+
+lap_rmse
+lap_mae
+
+summary(model_lap)
+
+# MODEL SAMO RAČUNARI
+
+set.seed(123)
+
+n_rac = nrow(racunari)
+train_idx_rac = sample(seq_len(n_rac), size = 0.8 * n_rac)
+
+train_rac = racunari[train_idx_rac, ]
+test_rac  = racunari[-train_idx_rac, ]
+
+nrow(train_rac)
+nrow(test_rac)
+
+model_rac = lm(log_price ~ cpu_tier + gpu_tier + ram_gb + storage_gb +
+                 brand + os + vram_gb + release_year + psu_watts, data = train_rac)
+
+pred_rac = expm1(predict(model_rac, test_rac))
+true_rac = test_rac$price
+
+rac_rmse = sqrt(mean((pred_rac - true_rac)^2))
+rac_mae  = mean(abs(pred_rac - true_rac))
+
+rac_rmse
+rac_mae
+
+summary(model_rac)
 
 # RANDOM FOREST
 
