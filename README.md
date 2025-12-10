@@ -171,6 +171,8 @@ Tokom projekta testirano je više različitih modela sa ciljem da se uporede nji
 - Random Forest
 - XGBoost
 - Lasso regresija
+- Linearna regresija (samo laptopovi)
+- Linearna regresija (samo računari)
 
 ---
 
