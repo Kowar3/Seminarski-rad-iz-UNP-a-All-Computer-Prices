@@ -1150,7 +1150,7 @@ ggplot(datav3, aes(x = cgt_score)) +
   theme_minimal()
 ```
 
-Pošto su za oba obeležja klase od 1 do 6, ovaj score ima vrednosti od 2 do 36, izuzetno je rupičast, tačnije dosta vrednosti nema, što je u redu, većina vrednosti je grupisana oko nekih delova vrednosti sa dosta velikim score-om ima malo, to su uglavnom profesionalni uređaji, a i većina našeg skupa podataka jesu upravo računari srednje i niže klase, zato njih i ima najviše
+Pošto su za oba obeležja klase od 1 do 6, ovaj score ima vrednosti od 1 do 36, izuzetno je rupičast, tačnije dosta vrednosti nema, što je u redu, većina vrednosti je grupisana oko nekih delova vrednosti sa dosta velikim score-om ima malo, to su uglavnom profesionalni uređaji, a i većina našeg skupa podataka jesu upravo računari srednje i niže klase, zato njih i ima najviše
 
 ```{r}
 ggplot(datav3, aes(x = cgt_score, y = price)) +
@@ -1221,7 +1221,7 @@ zaključujemo da je naša pretpostavka bila pun pogodak. Vidimo da generacije 2 
 najviše, što prati praksu, gde ljudi najčešće kupuju uređaje sa procesorima iz srednjeg 
 nivoa. To su npr. Intell i5 i u malo ređim slučajevima Intell i7. Generacije 1 i 4 dosta 
 manje ljudi kupuje, što je i potpuno logično. Procesor kao što je Intel i3 je dosta slab i 
-polako gubi svoju upotrebnu, dok procesor Intell i9 je ipak previše skup za većinu ljudi.
+polako gubi svoju upotrebu, dok procesor Intell i9 je ipak previše skup za većinu ljudi.
 
 ```{r}
 ggplot(datav3, aes(x = cpu_generation, y = price)) +
@@ -1650,7 +1650,7 @@ rf_model = ranger(
 ```
 
 Za treniranje modela korišćeni su prediktori iz najboljeg modela linearne regresije. 
-Broj stabala je postavljena na 500, sample.fraction je postavljena na 0.75, to znači da 
+Broj stabala je postavljen na 500, sample.fraction je postavljena na 0.75, to znači da 
 će svako drvo videti samo nasumičnih 75% podataka iz trening skupa, zajedno sa tim seed 
 je postavljen na 123. Takvom postavkom smo dosta smanjili mogućnost overfittovanja.
 
@@ -1706,7 +1706,7 @@ ggplot(imp, aes(x = reorder(feature, importance), y = importance)) +
 
 Poslednji deo kod ispitivanja modela je prikazivanje važnosti prediktora, tj. koliko su 
 prediktori u stvari imali uticaja u predviđanju cene. Kod linearne regresije je to moguće 
-videti komandom summary(), gde bi smo onda gledali one zvezdice, koje bi nam rekle koliko je 
+videti komandom summary(), gde bismo onda gledali one zvezdice, koje bi nam rekle koliko je 
 taj feature imao uticaja. Ovde smo to prikazali grafički.
 
 Sa grafika možemo videti da je cgt_score imao najveći uticaj i bio je proglašen za najboljeg 
