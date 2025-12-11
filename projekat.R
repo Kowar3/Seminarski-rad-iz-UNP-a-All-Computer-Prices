@@ -208,20 +208,6 @@ ggplot(data, aes(x = resolution, y = price)) +
     axis.text.x = element_text(angle = 25, vjust = 1, hjust = 1)
   )
 
-# Grafik cene u odnosu na frekvenciju osvežavanja tj refresh rate
-
-ggplot(data, aes(x = factor(refresh_hz), y = price)) +
-  geom_violin(color = "darkblue") +
-  labs(
-    title = "Cena uređaja u odnosu na frekvenciju osvežavanja",
-    x = "Frekvencija osvežavanja (Hz)",
-    y = "Cena uređaja (USD)"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold")
-  )
-
 # Grafik cene u odnosu na kapacitet baterije uređaja
 
 ggplot(data, aes(x = factor(round(battery_wh, -1)), y = price)) +
@@ -236,21 +222,6 @@ ggplot(data, aes(x = factor(round(battery_wh, -1)), y = price)) +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),
     axis.text.x = element_text(angle = 45, hjust = 1)
-  )
-
-# Grafik cene uređaja u odnosu na njegovu težinu
-
-ggplot(data, aes(x = weight_kg, y = price)) +
-  geom_point() +
-  labs(
-    title = "Cena uređaja u odnosu na njegovu težinu",
-    x = "Težina uređaja (kg)",
-    y = "Cena uređaja (USD)"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    panel.grid.minor = element_blank()
   )
 
 # Grafik cene uređaja u odnosu na brzinu procesora
@@ -323,21 +294,6 @@ ggplot(data, aes(x = cpu_tier, y = price, color = cpu_brand)) +
   theme_minimal() + labs(
     title = "Uticaj marke procesora na cenu po rangu",
     x = "Rang procesora (tier)",
-    y = "Cena u dolarima"
-  )+
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    panel.grid.minor = element_blank()
-  )
-
-# Uticaj marke računara i garancije u mesecima na cenu
-
-ggplot(data, aes(x = warranty_months, y = price, color = brand)) +
-  geom_point(alpha = 1/3) +
-  facet_wrap(~ brand) +
-  theme_minimal() + labs(
-    title = "Uticaj marke računara i garancije u mesecima na cenu",
-    x = "Garancija u mesecima",
     y = "Cena u dolarima"
   )+
   theme(
@@ -605,15 +561,7 @@ ggplot(datav2, aes(x = factor(cpu_cores), y = price)) +
     plot.title = element_text(hjust = 0.5, face = "bold")
   )
 
-# 6) Grafik cene u odnosu na base GHZ
-
-ggplot(datav2, aes(x = cpu_base_ghz, y = price)) +
-  geom_point() +
-  labs(title = "Cena u odnosu na base GHZ",
-       x = "CPU base (GHZ)", y = "Cena (USD)") +
-  theme_minimal()
-
-# 7) Grafik cene u odnosu na proizvođača uređaja
+# 6) Grafik cene u odnosu na proizvođača uređaja
 
 ggplot(datav2, aes(x = brand, y = price)) +
   geom_boxplot(fill = "lightblue", outlier.alpha = 0.4) +
@@ -629,7 +577,7 @@ ggplot(datav2, aes(x = brand, y = price)) +
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-# 8) Grafik cene u odnosu na vrstu uređaja
+# 7) Grafik cene u odnosu na vrstu uređaja
 
 ggplot(datav2, aes(x = device_type, y = price)) +
   geom_boxplot(fill = "lightblue") +
@@ -637,7 +585,7 @@ ggplot(datav2, aes(x = device_type, y = price)) +
        x = "Tip uređaja", y = "Cena (USD)") +
   theme_minimal()
 
-# 9) Uticaj VRAM memorije i ranga grafičke kartice na cenu uređaja
+# 8) Uticaj VRAM memorije i ranga grafičke kartice na cenu uređaja
 
 ggplot(datav2, aes(x = vram_gb, y = price, color = factor(gpu_tier))) +
   geom_jitter(alpha = 0.6, width = 0.3) +
@@ -654,7 +602,7 @@ ggplot(datav2, aes(x = vram_gb, y = price, color = factor(gpu_tier))) +
     panel.grid.minor = element_blank()
   )
 
-# 10) Uticaj ranga procesora i ranga grafičke kartice na cenu
+# 9) Uticaj ranga procesora i ranga grafičke kartice na cenu
 
 ggplot(datav2, aes(x = cpu_tier, y = price, color = gpu_tier)) +
   geom_point(alpha = 1/3) +
